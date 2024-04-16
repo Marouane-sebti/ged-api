@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,8 +18,10 @@ import lombok.Setter;
 @Setter
 public class Document {
 
-    private String id;
-    private String type;
+    private UUID id;
+    private String name;
+    private boolean isFolder;
+    private LocalDateTime creationDate;
+    private Map<String, String> metadata;
     private String filePath;
-
 }
