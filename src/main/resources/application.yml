@@ -1,0 +1,30 @@
+server:
+  port: 8070
+
+spring:
+  application:
+    name: ged-api
+    title: document Api
+    version: 1.0
+  datasource:
+    url: jdbc:mysql://localhost:3306/geddb?createDatabaseIfNotExist=true
+    username: root
+    password:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validateOnMigrate: true
+
+nextcloud:
+  serverUrl: "http://localhost:8081/"
+  username: "root"
+  password: "root"
+  operations:
+    - operation: createFolder
+      path: "/path/to/folder"
+    - operation: fileExists
+      path: "/path/to/file.txt"
+      exists: true
+    - operation: deleteFile
+      path: "/path/to/file.txt"

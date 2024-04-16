@@ -1,0 +1,36 @@
+version: '2.1'
+
+services:
+  ged-mysql:
+    image: mysql:8.0.26
+    container_name: ged-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ged-mysql:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password= --execute \"SHOW DATABASES;\""
+      interval: 100s
+      retries: 10
+
+  nextcloud:
+    image: nextcloud
+    ports:
+      - 8081:80
+    volumes:
+      - nextcloud:/var/www/html
+    depends_on:
+      - ged-mysql
+    environment:
+      MYSQL_HOST: ged-mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD:
+      MYSQL_DATABASE: nextcloud
+
+volumes:
+  ged-mysql:
+  nextcloud:
