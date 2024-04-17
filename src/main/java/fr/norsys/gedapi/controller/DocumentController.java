@@ -64,35 +64,6 @@ public class DocumentController {
                 .body(fileContent);
     }
 
-//    @PutMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<Document> createDocument(@RequestPart("file") MultipartFile file,  DocumentDto documentDto) {
-//        try {
-//            Document document = new Document(
-//                    documentDto.getId(),
-//                    documentDto.getName(),
-//                    documentDto.isFolder(),
-//                    documentDto.getCreationDate(),
-//                    documentDto.getMetadata(),
-//                    documentDto.getFilePath()
-//            );
-//            Document createdDocument = documentService.createDocument(document, file.getBytes());
-//            return new ResponseEntity<>(createdDocument, HttpStatus.CREATED);
-//        } catch (IOException e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-//    @PutMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<Document> createDocument(
-//            @RequestParam("file") MultipartFile file,
-//             MetadataDto metadataDto) {
-//        try {
-//            Document createdDocument = documentService.createDocument((List<MetadataDto>) metadataDto, file);
-//            return new ResponseEntity<>(createdDocument, HttpStatus.CREATED);
-//        } catch (IOException e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
     @PutMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Document> createDocument(
             @RequestParam("file") MultipartFile file,
@@ -104,16 +75,16 @@ public class DocumentController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Document> getDocument(@PathVariable UUID id) {
-//        Document document = documentService.getDocument(id);
-//        return new ResponseEntity<>(document, HttpStatus.OK);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteDocument(@PathVariable UUID id) {
-//        documentService.deleteDocument(id);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Document> getDocument(@PathVariable int id) {
+        Document document = documentService.getDocument(id);
+        return new ResponseEntity<>(document, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable int id) {
+        documentService.deleteDocument(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
 }

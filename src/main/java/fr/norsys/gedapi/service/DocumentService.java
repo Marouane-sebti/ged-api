@@ -53,14 +53,14 @@ import java.util.stream.Collectors;
             return savedDocument;
         }
 
-//    public Document getDocument(UUID id) {
-//        return documentDao.getDocumentById(id);
-//    }
+    public Document getDocument(int id) {
+        return documentDao.getDocumentById(id);
+    }
 
-//    public void deleteDocument(UUID id) {
-//        Document document = getDocument(id);
-//        nextcloudService.deleteFile(document.getName());
-//        documentDao.deleteDocument(id);
-//    }
+    public void deleteDocument(int id) {
+        Document document = getDocument(id);
+        nextcloudService.deleteFile(document.getName());
+        documentDao.deleteDocument(id);
+    }
 
 }
