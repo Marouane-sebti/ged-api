@@ -7,8 +7,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +15,7 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 @Repository
 public class DocumentDao {
@@ -84,6 +82,13 @@ public Document save(Document document) {
         jdbcTemplate.update(deleteMetadataSql, id);
         String deleteDocumentSql = "DELETE FROM documents WHERE id = ?";
         jdbcTemplate.update(deleteDocumentSql, id);
+    }
+    public Document getByHash(String hash) {
+        String sql = "SELECT * FROM documents WHERE hash_value = ?";
+
+        List<Document> documents = jdbcTemplate.query(sql, new Object[]{hash}, documentRowMapper);
+
+        return documents.isEmpty() ? null : documents.get(0);
     }
 
     private RowMapper<Document> documentRowMapper = new RowMapper<Document>() {
