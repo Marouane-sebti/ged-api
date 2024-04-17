@@ -36,6 +36,9 @@ public class DocumentService {
         String filePath = nextcloudService.uploadFile(fileData, file.getOriginalFilename());
         String fileHash = calculateSHA256(fileData);
         System.out.println("File hash: " + fileHash);
+        if(documentDao.getByHash(fileHash)!=null){
+            return null;
+        }
         Document document = Document.builder()
                 .name(file.getOriginalFilename())
                 .isFolder(false)
