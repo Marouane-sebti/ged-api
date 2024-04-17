@@ -32,7 +32,7 @@ public class DocumentDao {
 //        return document;
 //    }
 public Document save(Document document) {
-    String sql = "INSERT INTO documents (name, is_folder, creation_date, file_path) VALUES (?, ?, ?, ?)";
+    String sql = "INSERT INTO documents (name, is_folder, creation_date, file_path,hash_value) VALUES (?, ?, ?, ?,?)";
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
         PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -40,6 +40,8 @@ public Document save(Document document) {
         ps.setBoolean(2, document.isFolder());
         ps.setTimestamp(3, Timestamp.valueOf(document.getCreationDate()));
         ps.setString(4, document.getFilePath());
+        ps.setString(5, document.getHashValue());
+
         return ps;
     }, keyHolder);
 

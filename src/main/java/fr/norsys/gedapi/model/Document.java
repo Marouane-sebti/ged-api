@@ -25,5 +25,6 @@ public class Document {
     private LocalDateTime creationDate;
     private List<Metadata> metadata;
     private String filePath;
+    private String hashValue;
 
 }
