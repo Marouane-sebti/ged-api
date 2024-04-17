@@ -28,3 +28,7 @@ nextcloud:
       exists: true
     - operation: deleteFile
       path: "/path/to/file.txt"
+
+springdoc:
+    swagger-ui:
+        path: /swagger-ui.html
