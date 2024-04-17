@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,11 +27,6 @@ public class DocumentDao {
     public DocumentDao(JdbcTemplate jdbcTemplate ) {
         this.jdbcTemplate = jdbcTemplate;
     }
-//    public Document save(Document document) {
-//        String sql = "INSERT INTO documents (id, name, is_folder, creation_date, file_path) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE name=?, is_folder=?, creation_date=?, file_path=?";
-//        jdbcTemplate.update(sql, document.getId(), document.getName(), document.isFolder(), document.getCreationDate(), document.getFilePath(), document.getName(), document.isFolder(), document.getCreationDate(), document.getFilePath());
-//        return document;
-//    }
 public Document save(Document document) {
     String sql = "INSERT INTO documents (name, is_folder, creation_date, file_path,hash_value) VALUES (?, ?, ?, ?,?)";
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -52,24 +48,42 @@ public Document save(Document document) {
     return document;
 }
 
-    public Document createDocument(Document document) {
-        String sql = "INSERT INTO documents (id, name, is_folder, creation_date, file_path) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id";
-        jdbcTemplate.update(sql, document.getId(), document.getName(), document.isFolder(), document.getCreationDate(), document.getFilePath());
-        return document;
-    }
-    public Document getDocumentById(UUID id) {
-        String sql = "SELECT * FROM documents WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, documentRowMapper);
+    public Document getDocumentById(int id) {
+        String sql = "SELECT d.*, m.key, m.value FROM documents d LEFT JOIN metadata m ON d.id = m.document_id WHERE d.id = ?";
+
+        Map<Integer, Document> documentMap = new HashMap<>();
+
+        jdbcTemplate.query(sql, new Object[]{id}, (rs, rowNum) -> {
+            Integer documentId = rs.getInt("id");
+
+            Document document = documentMap.get(documentId);
+            if (document == null) {
+                document = new Document();
+                document.setId(documentId);
+                document.setName(rs.getString("name"));
+                document.setFolder(rs.getBoolean("is_folder"));
+                document.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
+                document.setFilePath(rs.getString("file_path"));
+                documentMap.put(documentId, document);
+            }
+
+            Metadata metadata = new Metadata();
+            metadata.setKey(rs.getString("key"));
+            metadata.setValue(rs.getString("value"));
+
+            document.getMetadata().add(metadata);
+
+            return document;
+        });
+
+        return documentMap.values().stream().findFirst().orElse(null);
     }
 
-    public void updateDocument(Document document) {
-        String sql = "UPDATE documents SET name = ?, is_folder = ?, creation_date = ?, metadata = ?, file_path = ? WHERE id = ?";
-        jdbcTemplate.update(sql, document.getName(), document.isFolder(), document.getCreationDate(), document.getMetadata(), document.getFilePath(), document.getId());
-    }
-
-    public void deleteDocument(UUID id) {
-        String sql = "DELETE FROM documents WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+    public void deleteDocument(int id) {
+        String deleteMetadataSql = "DELETE FROM metadata WHERE document_id = ?";
+        jdbcTemplate.update(deleteMetadataSql, id);
+        String deleteDocumentSql = "DELETE FROM documents WHERE id = ?";
+        jdbcTemplate.update(deleteDocumentSql, id);
     }
 
     private RowMapper<Document> documentRowMapper = new RowMapper<Document>() {
@@ -80,7 +94,6 @@ public Document save(Document document) {
             document.setName(rs.getString("name"));
             document.setFolder(rs.getBoolean("is_folder"));
             document.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
-            document.setMetadata((List<Metadata>) rs.getObject("metadata"));
             document.setFilePath(rs.getString("file_path"));
             return document;
         }
