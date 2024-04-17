@@ -2,6 +2,7 @@ package fr.norsys.gedapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.norsys.gedapi.dto.DocumentDto;
+import fr.norsys.gedapi.dto.MetadataDto;
 import fr.norsys.gedapi.model.Document;
 import fr.norsys.gedapi.service.DocumentService;
 import fr.norsys.gedapi.service.NextcloudService;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -80,11 +82,23 @@ public class DocumentController {
 //        }
 //    }
 
+//    @PutMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<Document> createDocument(
+//            @RequestParam("file") MultipartFile file,
+//             MetadataDto metadataDto) {
+//        try {
+//            Document createdDocument = documentService.createDocument((List<MetadataDto>) metadataDto, file);
+//            return new ResponseEntity<>(createdDocument, HttpStatus.CREATED);
+//        } catch (IOException e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
     @PutMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Document> createDocument(
-            @RequestParam("file") MultipartFile file,DocumentDto documentDto) {
+            @RequestParam("file") MultipartFile file,
+            @RequestPart("metadata") List<MetadataDto> metadataDtoList) {
         try {
-            Document createdDocument = documentService.createDocument(documentDto, file);
+            Document createdDocument = documentService.createDocument(metadataDtoList, file);
             return new ResponseEntity<>(createdDocument, HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

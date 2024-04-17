@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,8 +28,10 @@ public class DocumentDto {
     @JsonProperty("creation_date")
     private LocalDateTime creationDate;
 
-    private Map<String, String> metadata;
+    private List<MetadataDto> metadata = new ArrayList<>();
+
 
     @JsonProperty("file_path")
     private String filePath;
+
 }
