@@ -1,6 +1,6 @@
-package fr.norsys.gedapi.model;
+package fr.norsys.gedapi.dto;
 
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,13 +16,18 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Document {
+public class DocumentDto {
 
-    private int id;
     private String name;
-    private boolean isFolder;
-    private LocalDateTime creationDate;
-    private Map<String, String> metadata;
-    private String filePath;
 
+    @JsonProperty("is_folder")
+    private boolean isFolder;
+
+    @JsonProperty("creation_date")
+    private LocalDateTime creationDate;
+
+    private Map<String, String> metadata;
+
+    @JsonProperty("file_path")
+    private String filePath;
 }

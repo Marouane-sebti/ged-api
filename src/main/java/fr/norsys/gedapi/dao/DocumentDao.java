@@ -48,7 +48,7 @@ public class DocumentDao {
         @Override
         public Document mapRow(ResultSet rs, int rowNum) throws SQLException {
             Document document = new Document();
-            document.setId(UUID.fromString(rs.getString("id")));
+            document.setId(rs.getInt("id"));
             document.setName(rs.getString("name"));
             document.setFolder(rs.getBoolean("is_folder"));
             document.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());

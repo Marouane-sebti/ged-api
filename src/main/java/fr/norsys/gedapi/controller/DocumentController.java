@@ -1,5 +1,7 @@
 package fr.norsys.gedapi.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.norsys.gedapi.dto.DocumentDto;
 import fr.norsys.gedapi.model.Document;
 import fr.norsys.gedapi.service.DocumentService;
 import fr.norsys.gedapi.service.NextcloudService;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -59,26 +62,44 @@ public class DocumentController {
                 .body(fileContent);
     }
 
+//    @PutMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<Document> createDocument(@RequestPart("file") MultipartFile file,  DocumentDto documentDto) {
+//        try {
+//            Document document = new Document(
+//                    documentDto.getId(),
+//                    documentDto.getName(),
+//                    documentDto.isFolder(),
+//                    documentDto.getCreationDate(),
+//                    documentDto.getMetadata(),
+//                    documentDto.getFilePath()
+//            );
+//            Document createdDocument = documentService.createDocument(document, file.getBytes());
+//            return new ResponseEntity<>(createdDocument, HttpStatus.CREATED);
+//        } catch (IOException e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
     @PutMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Document> createDocument(@RequestParam("file") MultipartFile file, Document document) {
+    public ResponseEntity<Document> createDocument(
+            @RequestParam("file") MultipartFile file,DocumentDto documentDto) {
         try {
-            Document createdDocument = documentService.createDocument(document, file.getBytes());
+            Document createdDocument = documentService.createDocument(documentDto, file);
             return new ResponseEntity<>(createdDocument, HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Document> getDocument(@PathVariable UUID id) {
-        Document document = documentService.getDocument(id);
-        return new ResponseEntity<>(document, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable UUID id) {
-        documentService.deleteDocument(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Document> getDocument(@PathVariable UUID id) {
+//        Document document = documentService.getDocument(id);
+//        return new ResponseEntity<>(document, HttpStatus.OK);
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteDocument(@PathVariable UUID id) {
+//        documentService.deleteDocument(id);
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//
+//    }
 }

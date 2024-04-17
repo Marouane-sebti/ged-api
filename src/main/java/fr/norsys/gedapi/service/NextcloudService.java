@@ -36,7 +36,7 @@ public class NextcloudService {
         this.restTemplate.getInterceptors().add(basicAuthInterceptor);
     }
 
-    public void uploadFile(byte[] fileData, String fileName) {
+    public String uploadFile(byte[] fileData, String fileName) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
@@ -50,9 +50,9 @@ public class NextcloudService {
         );
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            System.out.println("File uploaded successfully!");
+            return serverUrl + "remote.php/dav/files/" + username + "/" + fileName;
         } else {
-            System.err.println("Failed to upload file: " + responseEntity.getBody());
+            throw new RuntimeException("Failed to upload file to Nextcloud: " + responseEntity.getBody());
         }
     }
 
