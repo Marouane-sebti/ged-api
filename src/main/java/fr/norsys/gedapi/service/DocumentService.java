@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
             this.nextcloudService = nextcloudService;
         }
 
-
+        @Transactional
         public Document createDocument(List<MetadataDto> metadataDto, MultipartFile file) throws IOException {
             byte[] fileData = file.getBytes();
             String filePath = nextcloudService.uploadFile(fileData,file.getOriginalFilename());

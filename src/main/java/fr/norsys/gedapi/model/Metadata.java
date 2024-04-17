@@ -19,6 +19,9 @@ public class Metadata {
     private String key;
     private String value;
 
-    public Metadata(int id, String key, String value) {
+    public Metadata(int documentId, String key, String value) {
+        this.documentId = documentId;
+        this.key = key;
+        this.value = value;
     }
 }
