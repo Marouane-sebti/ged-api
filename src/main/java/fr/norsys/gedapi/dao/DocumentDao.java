@@ -1,6 +1,7 @@
 package fr.norsys.gedapi.dao;
 
 import fr.norsys.gedapi.model.Document;
+import fr.norsys.gedapi.model.DocumentSearchCriteria;
 import fr.norsys.gedapi.model.Metadata;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +91,42 @@ public Document save(Document document) {
         List<Document> documents = jdbcTemplate.query(sql, new Object[]{hash}, documentRowMapper);
 
         return documents.isEmpty() ? null : documents.get(0);
+    }
+    public List<Document> searchDocuments(DocumentSearchCriteria criteria) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM documents WHERE 1=1");
+
+        List<Object> params = new ArrayList<>();
+        if (criteria.getName() != null) {
+            sql.append(" AND name LIKE ?");
+            params.add("%" + criteria.getName() + "%");
+        }
+        if (criteria.getIsFolder() != null) {
+            sql.append(" AND is_folder = ?");
+            params.add(criteria.getIsFolder());
+        }
+        if (criteria.getCreationDateFrom() != null) {
+            sql.append(" AND creation_date >= ?");
+            params.add(criteria.getCreationDateFrom());
+        }
+        if (criteria.getCreationDateTo() != null) {
+            sql.append(" AND creation_date <= ?");
+            params.add(criteria.getCreationDateTo());
+        }
+
+        if (criteria.getMetadataKey() != null) {
+            sql.append(" AND id IN (SELECT document_id FROM metadata WHERE key LIKE ?)");
+            params.add("%" + criteria.getMetadataKey() + "%");
+        }
+        if (criteria.getMetadataValue() != null) {
+            sql.append(" AND id IN (SELECT document_id FROM metadata WHERE value LIKE ?)");
+            params.add("%" + criteria.getMetadataValue() + "%");
+        }
+
+        return jdbcTemplate.query(sql.toString(), params.toArray(), documentRowMapper);
+    }
+    public List<Document> getAllDocuments() {
+        String sql = "SELECT * FROM documents";
+        return jdbcTemplate.query(sql, documentRowMapper);
     }
 
     private RowMapper<Document> documentRowMapper = new RowMapper<Document>() {
