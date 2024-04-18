@@ -35,7 +35,6 @@ public class DocumentService {
         byte[] fileData = file.getBytes();
         String filePath = nextcloudService.uploadFile(fileData, file.getOriginalFilename());
         String fileHash = calculateSHA256(fileData);
-        System.out.println("File hash: " + fileHash);
         if(documentDao.getByHash(fileHash)!=null){
             return null;
         }
@@ -45,6 +44,8 @@ public class DocumentService {
                 .creationDate(LocalDateTime.now())
                 .filePath(filePath)
                 .hashValue(fileHash)
+                .size(file.getSize())
+                .type(file.getContentType())
                 .build();
         Document savedDocument = documentDao.save(document);
 

@@ -28,5 +28,7 @@ public class Document {
 
     private String filePath;
     private String hashValue;
+    private long size;
+    private String type;
 
 }
