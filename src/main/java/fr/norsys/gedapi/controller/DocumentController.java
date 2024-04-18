@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/files")
+@CrossOrigin(origins = "http://localhost:4200")
 public class DocumentController {
 
     private final NextcloudService nextcloudService;
@@ -112,6 +114,8 @@ public class DocumentController {
                 document.setFolder(rs.getBoolean("is_folder"));
                 document.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
                 document.setFilePath(rs.getString("file_path"));
+                document.setSize(rs.getLong("size"));
+                document.setType(rs.getString("type"));
                 documentMap.put(documentId, document);
             }
             String key = rs.getString("key");
