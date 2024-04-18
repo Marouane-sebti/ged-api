@@ -125,11 +125,6 @@ public Document save(Document document) {
 
         return jdbcTemplate.query(sql.toString(), params.toArray(), documentRowMapper);
     }
-    public List<Document> getAllDocuments() {
-        String sql = "SELECT * FROM documents";
-        return jdbcTemplate.query(sql, documentRowMapper);
-    }
-
     private RowMapper<Document> documentRowMapper = new RowMapper<Document>() {
         @Override
         public Document mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -142,5 +137,35 @@ public Document save(Document document) {
             return document;
         }
     };
+
+    public List<Document> getAllDocuments(){
+        String sql = "SELECT d.*, m.key, m.value FROM documents d LEFT JOIN metadata m ON d.id = m.document_id";
+        Map<Integer, Document> documentMap = new HashMap<>();
+        jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Integer documentId = rs.getInt("id");
+            Document document = documentMap.get(documentId);
+            if (document == null) {
+                document = new Document();
+                document.setId(documentId);
+                document.setName(rs.getString("name"));
+                document.setFolder(rs.getBoolean("is_folder"));
+                document.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
+                document.setFilePath(rs.getString("file_path"));
+                document.setSize(rs.getLong("size"));
+                document.setType(rs.getString("type"));
+                documentMap.put(documentId, document);
+            }
+            String key = rs.getString("key");
+            if (key != null) {
+                Metadata metadata = new Metadata();
+                metadata.setKey(key);
+                metadata.setValue(rs.getString("value"));
+
+                document.getMetadata().add(metadata);
+            }
+            return document;
+        });
+        return new ArrayList<>(documentMap.values());
+    }
 
 }
