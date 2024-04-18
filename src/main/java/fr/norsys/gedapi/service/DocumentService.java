@@ -4,6 +4,7 @@ import fr.norsys.gedapi.dao.DocumentDao;
 import fr.norsys.gedapi.dao.MetadataDao;
 import fr.norsys.gedapi.dto.MetadataDto;
 import fr.norsys.gedapi.model.Document;
+import fr.norsys.gedapi.model.DocumentSearchCriteria;
 import fr.norsys.gedapi.model.Metadata;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,4 +90,11 @@ public class DocumentService {
         documentDao.deleteDocument(id);
     }
 
+    public List<Document> getAllDocuments() {
+        return documentDao.getAllDocuments();
+    }
+
+    public List<Document> searchDocuments(DocumentSearchCriteria criteria) {
+        return documentDao.searchDocuments(criteria);
+    }
 }
