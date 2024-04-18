@@ -5,6 +5,8 @@ import fr.norsys.gedapi.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
     @Autowired
@@ -18,7 +20,7 @@ public class UserService {
         return userDao.findByUsername(username);
     }
 
-    public User findById(int id) {
+    public Optional<User> findById(int id) {
         return userDao.findById(id);
     }
 }

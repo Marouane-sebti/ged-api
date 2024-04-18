@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -22,7 +24,7 @@ public class UserController {
         return userService.findByUsername(username);
     }
     @GetMapping("/findById")
-    public User findById(int id) {
+    public Optional<User> findById(int id) {
         return userService.findById(id);
     }
 }
