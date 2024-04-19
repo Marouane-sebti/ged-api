@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -104,6 +106,10 @@ public Document save(Document document) {
         StringBuilder sql = new StringBuilder("SELECT * FROM documents WHERE 1=1");
 
         List<Object> params = new ArrayList<>();
+        if (criteria.getId() != null) {
+            sql.append(" AND id = ?");
+            params.add(criteria.getId());
+        }
         if (criteria.getName() != null) {
             sql.append(" AND name LIKE ?");
             params.add("%" + criteria.getName() + "%");
@@ -114,11 +120,15 @@ public Document save(Document document) {
         }
         if (criteria.getCreationDateFrom() != null) {
             sql.append(" AND creation_date >= ?");
-            params.add(criteria.getCreationDateFrom());
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+            LocalDateTime dateTimeFrom = LocalDateTime.parse(criteria.getCreationDateFrom(), formatter);
+            params.add(Timestamp.valueOf(dateTimeFrom));
         }
         if (criteria.getCreationDateTo() != null) {
             sql.append(" AND creation_date <= ?");
-            params.add(criteria.getCreationDateTo());
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+            LocalDateTime dateTimeTo = LocalDateTime.parse(criteria.getCreationDateTo(), formatter);
+            params.add(Timestamp.valueOf(dateTimeTo));
         }
         if (criteria.getType() != null) {
             sql.append(" AND type = ?");

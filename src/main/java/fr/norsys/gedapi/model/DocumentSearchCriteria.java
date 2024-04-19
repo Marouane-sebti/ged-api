@@ -12,11 +12,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DocumentSearchCriteria {
+    private String id;
     private String name;
     private Boolean isFolder;
     private String type;
-    private LocalDateTime creationDateFrom;
-    private LocalDateTime creationDateTo;
+    private String creationDateFrom;
+    private String creationDateTo;
     private String metadataKey;
     private String metadataValue;
     private Integer userId;
