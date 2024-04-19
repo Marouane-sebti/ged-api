@@ -69,14 +69,15 @@ public class DocumentController {
     }
 
     //@PutMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PutMapping(value = "/create")
+    @PutMapping(value = "/create/{id}")
     public ResponseEntity<Document> createDocument(
             @RequestPart("file") MultipartFile file,
-            @RequestParam("metadata") String metadataDtoJson) {
+            @RequestParam("metadata") String metadataDtoJson
+            ,@PathVariable int id) {
         try {
             List<MetadataDto> metadataDtoList = objectMapper.readValue(metadataDtoJson, new TypeReference<List<MetadataDto>>() {
             });
-            Document createdDocument = documentService.createDocument(metadataDtoList, file);
+            Document createdDocument = documentService.createDocument(metadataDtoList, file,id);
             return new ResponseEntity<>(createdDocument, HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

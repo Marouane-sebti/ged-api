@@ -33,7 +33,7 @@ public class DocumentService {
     }
 
     @Transactional
-    public Document createDocument(List<MetadataDto> metadataDto, MultipartFile file) throws IOException {
+    public Document createDocument(List<MetadataDto> metadataDto, MultipartFile file,int userId) throws IOException {
         byte[] fileData = file.getBytes();
         String filePath = nextcloudService.uploadFile(fileData, file.getOriginalFilename());
         String fileHash = calculateSHA256(fileData);
@@ -48,6 +48,7 @@ public class DocumentService {
                 .hashValue(fileHash)
                 .size(file.getSize())
                 .type(file.getContentType())
+                .userId(userId)
                 .build();
         Document savedDocument = documentDao.save(document);
 

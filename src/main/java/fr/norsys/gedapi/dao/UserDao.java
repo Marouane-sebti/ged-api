@@ -52,7 +52,7 @@ public class UserDao {
 
 private RowMapper<User> getUserRowMapper() {
         return (rs, rowNum) -> User.builder()
-                .id(rs.getLong("id"))
+                .id(rs.getInt("id"))
                 .username(rs.getString("user_name"))
                 .password(rs.getString("password"))
                 .email(rs.getString("email"))

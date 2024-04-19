@@ -48,9 +48,11 @@ public class AuthService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
             var jwt = jwtService.generateToken(user);
+            User authenticatedUser = userService.findByUsername(request.getUsername());
             return AuthenticationResponse
                     .builder()
                     .token(jwt)
+                    .userId(authenticatedUser.getId())
                     .build();
         }
     }
