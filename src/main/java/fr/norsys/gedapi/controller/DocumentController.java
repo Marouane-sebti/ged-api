@@ -84,15 +84,15 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Document> getDocument(@PathVariable int id) {
-        Document document = documentService.getDocument(id);
+    @GetMapping("/{id}/{userId}")
+    public ResponseEntity<Document> getDocument(@PathVariable int id, @PathVariable int userId) {
+        Document document = documentService.getDocumentById(id, userId);
         return new ResponseEntity<>(document, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable int id) {
-        documentService.deleteDocument(id);
+    @DeleteMapping("/{idDocument}/{idUser}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable int idDocument,@PathVariable int idUser) {
+        documentService.deleteDocument(idDocument,idUser);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
@@ -111,7 +111,7 @@ public class DocumentController {
 
     @GetMapping("/download/{documentId}")
     public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable int documentId) {
-        Document document = documentService.getDocument(documentId);
+        Document document = documentService.getDocumentById(documentId,0);
         String fileName = document.getName();
 
         byte[] fileContent = nextcloudService.downloadFile(fileName);

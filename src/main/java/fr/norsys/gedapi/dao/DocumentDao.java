@@ -50,12 +50,12 @@ public Document save(Document document) {
     return document;
 }
 
-    public Document getDocumentById(int id) {
+    public Document getDocumentById(int id, int userId) {
         String sql = "SELECT d.*, m.key, m.value FROM documents d LEFT JOIN metadata m ON d.id = m.document_id WHERE d.id = ? AND d.user_id = ?";
 
         Map<Integer, Document> documentMap = new HashMap<>();
 
-        jdbcTemplate.query(sql, new Object[]{id}, (rs, rowNum) -> {
+        jdbcTemplate.query(sql, new Object[]{id, userId}, (rs, rowNum) -> {
             Integer documentId = rs.getInt("id");
 
             Document document = documentMap.get(documentId);

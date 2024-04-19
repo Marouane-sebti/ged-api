@@ -82,12 +82,12 @@ public class DocumentService {
         return sb.toString();
     }
 
-    public Document getDocument(int id) {
-        return documentDao.getDocumentById(id);
+    public Document getDocumentById(int idDocument, int idUser) {
+        return documentDao.getDocumentById(idDocument,idUser);
     }
 
-    public void deleteDocument(int id) {
-        Document document = getDocument(id);
+    public void deleteDocument(int id,int userId) {
+        Document document = documentDao.getDocumentById(id,userId);
         nextcloudService.deleteFile(document.getName());
         documentDao.deleteDocument(id);
     }
@@ -99,8 +99,8 @@ public class DocumentService {
     public List<Document> searchDocuments(DocumentSearchCriteria criteria) {
         return documentDao.searchDocuments(criteria);
     }
-    public ByteArrayResource downloadDocument(int documentId) {
-        Document document = getDocument(documentId);
+    public ByteArrayResource downloadDocument(int documentId,int userId) {
+        Document document = documentDao.getDocumentById(documentId,userId);
         byte[] data = nextcloudService.downloadFile(document.getFilePath());
         return new ByteArrayResource(data);
     }
