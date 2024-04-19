@@ -103,4 +103,7 @@ public class DocumentService {
         byte[] data = nextcloudService.downloadFile(document.getFilePath());
         return new ByteArrayResource(data);
     }
+    public List<Document> getDocumentsByUserId(int userId) {
+        return documentDao.getDocumentsByUserId(userId);
+    }
 }

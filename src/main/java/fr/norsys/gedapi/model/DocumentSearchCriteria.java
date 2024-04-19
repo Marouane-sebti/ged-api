@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class DocumentSearchCriteria {
     private String name;
     private Boolean isFolder;
+    private String type;
     private LocalDateTime creationDateFrom;
     private LocalDateTime creationDateTo;
     private String metadataKey;

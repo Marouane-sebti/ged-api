@@ -122,4 +122,8 @@ public class DocumentController {
 
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
+    @GetMapping("/user/{userId}")
+    public List<Document> getDocumentsByUserId(@PathVariable int userId) {
+        return documentService.getDocumentsByUserId(userId);
+    }
 }

@@ -30,5 +30,6 @@ public class Document {
     private String hashValue;
     private long size;
     private String type;
+    private int userId;
 
 }

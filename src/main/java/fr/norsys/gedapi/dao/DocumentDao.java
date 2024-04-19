@@ -28,7 +28,7 @@ public class DocumentDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 public Document save(Document document) {
-    String sql = "INSERT INTO documents (name, is_folder, creation_date, file_path,hash_value,size,type) VALUES (?,?,?, ?, ?, ?,?)";
+    String sql = "INSERT INTO documents (name, is_folder, creation_date, file_path,hash_value,size,type,user_id) VALUES (?,?,?,?, ?, ?, ?,?)";
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
         PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -39,6 +39,7 @@ public Document save(Document document) {
         ps.setString(5, document.getHashValue());
         ps.setLong(6, document.getSize());
         ps.setString(7, document.getType());
+        ps.setInt(8, document.getUserId());
         return ps;
     }, keyHolder);
 
@@ -50,7 +51,7 @@ public Document save(Document document) {
 }
 
     public Document getDocumentById(int id) {
-        String sql = "SELECT d.*, m.key, m.value FROM documents d LEFT JOIN metadata m ON d.id = m.document_id WHERE d.id = ?";
+        String sql = "SELECT d.*, m.key, m.value FROM documents d LEFT JOIN metadata m ON d.id = m.document_id WHERE d.id = ? AND d.user_id = ?";
 
         Map<Integer, Document> documentMap = new HashMap<>();
 
@@ -93,6 +94,12 @@ public Document save(Document document) {
 
         return documents.isEmpty() ? null : documents.get(0);
     }
+    public List<Document> getDocumentsByUserId(int userId) {
+        String sql = "SELECT * FROM documents WHERE user_id = ?";
+
+        return jdbcTemplate.query(sql, new Object[]{userId}, documentRowMapper);
+    }
+
     public List<Document> searchDocuments(DocumentSearchCriteria criteria) {
         StringBuilder sql = new StringBuilder("SELECT * FROM documents WHERE 1=1");
 
@@ -112,6 +119,10 @@ public Document save(Document document) {
         if (criteria.getCreationDateTo() != null) {
             sql.append(" AND creation_date <= ?");
             params.add(criteria.getCreationDateTo());
+        }
+        if (criteria.getType() != null) {
+            sql.append(" AND type = ?");
+            params.add(criteria.getType());
         }
 
         if (criteria.getMetadataKey() != null) {
@@ -134,6 +145,9 @@ public Document save(Document document) {
             document.setFolder(rs.getBoolean("is_folder"));
             document.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
             document.setFilePath(rs.getString("file_path"));
+            document.setSize(rs.getLong("size"));
+            document.setType(rs.getString("type"));
+            document.setUserId(rs.getInt("user_id"));
             return document;
         }
     };
