@@ -115,7 +115,7 @@ public Document save(Document document) {
         }
 
         if (criteria.getMetadataKey() != null) {
-            sql.append(" AND id IN (SELECT document_id FROM metadata WHERE key LIKE ?)");
+            sql.append(" AND id IN (SELECT document_id FROM metadata WHERE `key` LIKE ?)");
             params.add("%" + criteria.getMetadataKey() + "%");
         }
         if (criteria.getMetadataValue() != null) {
