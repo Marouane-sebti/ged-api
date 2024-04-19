@@ -19,5 +19,6 @@ public class DocumentSearchCriteria {
     private LocalDateTime creationDateTo;
     private String metadataKey;
     private String metadataValue;
+    private Integer userId;
 
 }

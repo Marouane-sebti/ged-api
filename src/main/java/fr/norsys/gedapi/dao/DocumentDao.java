@@ -133,7 +133,10 @@ public Document save(Document document) {
             sql.append(" AND id IN (SELECT document_id FROM metadata WHERE value LIKE ?)");
             params.add("%" + criteria.getMetadataValue() + "%");
         }
-
+        if (criteria.getUserId() != null) {
+            sql.append(" AND user_id = ? ");
+            params.add(criteria.getUserId());
+        }
         return jdbcTemplate.query(sql.toString(), params.toArray(), documentRowMapper);
     }
     private RowMapper<Document> documentRowMapper = new RowMapper<Document>() {

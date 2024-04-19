@@ -98,7 +98,7 @@ public class DocumentController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<Document>> searchDocuments(@RequestBody DocumentSearchCriteria criteria) {
+    public ResponseEntity<List<Document>> searchDocuments(@RequestBody DocumentSearchCriteria criteria){
         List<Document> documents = documentService.searchDocuments(criteria);
         return new ResponseEntity<>(documents, HttpStatus.OK);
     }
