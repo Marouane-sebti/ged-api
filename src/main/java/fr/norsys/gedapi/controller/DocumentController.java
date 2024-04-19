@@ -10,8 +10,11 @@ import fr.norsys.gedapi.service.DocumentService;
 import fr.norsys.gedapi.service.NextcloudService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,8 +60,7 @@ public class DocumentController {
             return new ResponseEntity<>("Failed to upload file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping("/download/{fileName}")
+    @GetMapping("/download/name/{fileName}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable String fileName) {
         byte[] fileContent = nextcloudService.downloadFile(fileName);
         return ResponseEntity.ok()
@@ -80,6 +82,7 @@ public class DocumentController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Document> getDocument(@PathVariable int id) {
         Document document = documentService.getDocument(id);
@@ -92,13 +95,31 @@ public class DocumentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+
     @PostMapping("/search")
     public ResponseEntity<List<Document>> searchDocuments(@RequestBody DocumentSearchCriteria criteria) {
         List<Document> documents = documentService.searchDocuments(criteria);
         return new ResponseEntity<>(documents, HttpStatus.OK);
     }
+
     @GetMapping
     public List<Document> getAllDocuments() {
         return documentService.getAllDocuments();
+    }
+
+
+    @GetMapping("/download/{documentId}")
+    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable int documentId) {
+        Document document = documentService.getDocument(documentId);
+        String fileName = document.getName();
+
+        byte[] fileContent = nextcloudService.downloadFile(fileName);
+        ByteArrayResource resource = new ByteArrayResource(fileContent);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename(document.getName()).build());
+
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }

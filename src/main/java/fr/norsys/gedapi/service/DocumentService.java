@@ -6,6 +6,7 @@ import fr.norsys.gedapi.dto.MetadataDto;
 import fr.norsys.gedapi.model.Document;
 import fr.norsys.gedapi.model.DocumentSearchCriteria;
 import fr.norsys.gedapi.model.Metadata;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,10 +67,10 @@ public class DocumentService {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(fileData);
-            return bytesToHex(hashBytes); // Convert hash bytes to hexadecimal string
+            return bytesToHex(hashBytes);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace(); // Handle or log the exception appropriately
-            return null; // Return null or throw exception based on your error handling strategy
+            e.printStackTrace();
+            return null;
         }
     }
     private String bytesToHex(byte[] bytes) {
@@ -96,5 +97,10 @@ public class DocumentService {
 
     public List<Document> searchDocuments(DocumentSearchCriteria criteria) {
         return documentDao.searchDocuments(criteria);
+    }
+    public ByteArrayResource downloadDocument(int documentId) {
+        Document document = getDocument(documentId);
+        byte[] data = nextcloudService.downloadFile(document.getFilePath());
+        return new ByteArrayResource(data);
     }
 }
